@@ -1,0 +1,17 @@
+# Core deep learning
+torch
+torchvision
+
+# Web API
+fastapi
+uvicorn
+python-multipart
+
+# Visualization and utilities
+matplotlib
+tqdm
+pillow
+numpy
+
+# Optional: for data handling
+requests

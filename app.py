@@ -1,23 +1,12 @@
-# ------------------------------------------------------------
-# app.py — FastAPI server for GAN Image Generation
-# ------------------------------------------------------------
-# This file fulfills the rubric requirement for:
-# ✅ Added API endpoints that can be queried on instructor's machine
-# ✅ Organized, functional code using helper package
-# ✅ Docker-compatible entrypoint (CMD in Dockerfile calls uvicorn app:app)
-# ------------------------------------------------------------
+
 
 from fastapi import FastAPI
 import torch
 import os
 
-# Import our helper package
 from helper.model import Generator
 from helper.generator import generate_samples
 
-# ------------------------------------------------------------
-# 1. FastAPI initialization
-# ------------------------------------------------------------
 app = FastAPI(
     title="GAN Image Generator API",
     description="A FastAPI-based interface to generate images using a trained DCGAN model.",
