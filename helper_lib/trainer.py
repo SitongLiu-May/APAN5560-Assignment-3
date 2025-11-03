@@ -1,7 +1,5 @@
-
 import torch
 from tqdm import tqdm
-
 
 def train_gan(
     generator,
@@ -34,7 +32,7 @@ def train_gan(
     criterion : torch.nn.modules.loss
         Loss function (usually BCELoss)
     device : str
-        'cuda' or 'cpu'
+        'cuda', 'mps', or 'cpu'
     epochs : int
         Number of training epochs
     latent_dim : int
@@ -45,21 +43,20 @@ def train_gan(
         Optional callback for saving sample images each epoch
     """
 
-    generator.to(device)
-    discriminator.to(device)
+    print(f"🚀 Starting GAN training on {str(device).upper()} for {epochs} epochs...")
 
-    print(f"Starting GAN training on {device.upper()} for {epochs} epochs...")
+    generator.train()
+    discriminator.train()
+
     for epoch in range(1, epochs + 1):
         g_loss_total, d_loss_total = 0.0, 0.0
-        generator.train()
-        discriminator.train()
 
         for imgs, _ in tqdm(data_loader, desc=f"Epoch {epoch}/{epochs}"):
             imgs = imgs.to(device)
             batch_size = imgs.size(0)
 
             # ----------------------
-            # 1️⃣  Train Discriminator
+            # 1️⃣ Train Discriminator
             # ----------------------
             optimizer_D.zero_grad()
 
@@ -77,7 +74,7 @@ def train_gan(
             optimizer_D.step()
 
             # ----------------------
-            # 2️⃣  Train Generator
+            # 2️⃣ Train Generator
             # ----------------------
             optimizer_G.zero_grad()
 
@@ -97,11 +94,14 @@ def train_gan(
         # ----------------------
         avg_g = g_loss_total / len(data_loader)
         avg_d = d_loss_total / len(data_loader)
-        print(f"Epoch [{epoch}/{epochs}] | D_loss: {avg_d:.4f} | G_loss: {avg_g:.4f}")
+        print(f"📈 Epoch [{epoch}/{epochs}] | D_loss: {avg_d:.4f} | G_loss: {avg_g:.4f}")
 
-        # Optional sample callback
+        # Optional sample callback (e.g. save generated images)
         if sample_fn and (epoch % save_interval == 0):
-            sample_fn(generator, epoch, device)
+            try:
+                sample_fn(generator, epoch, device)
+            except Exception as e:
+                print(f"⚠️  Warning: Could not save sample for epoch {epoch}: {e}")
 
     print("✅ GAN training complete.")
     return generator, discriminator

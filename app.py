@@ -4,8 +4,9 @@ from fastapi import FastAPI
 import torch
 import os
 
-from helper.model import Generator
-from helper.generator import generate_samples
+from helper_lib.model import Generator
+from helper_lib.generator import generate_samples
+
 
 app = FastAPI(
     title="GAN Image Generator API",
